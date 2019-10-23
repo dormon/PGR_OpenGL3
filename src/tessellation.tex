@@ -23,8 +23,8 @@
 	\end{itemize}
   {\scriptsize
 	\begin{minted}[frame=lines]{c++}
-    glPatchParameteri(GL_PATCH_VERTICES,10);//nastavi pocet vrcholu patche - 10
-    glDrawArrays(GL_PATCHES,0,100);//vykresli 10 patchu po 10 vrcholech
+glPatchParameteri(GL_PATCH_VERTICES,10);//nastavi pocet vrcholu patche - 10
+glDrawArrays(GL_PATCHES,0,100);//vykresli 10 patchu po 10 vrcholech
 	\end{minted}
   }
 	\begin{figure}[h]
@@ -63,28 +63,28 @@
 \frametitle{Control Shader - příklad}
 	{\scriptsize
 	\begin{minted}[frame=lines]{glsl}
-	#version 430
+#version 430
 
-	// pocet vertexu ve vystupni primitivu
-	// pocet spusteni control shaderu
-	layout(vertices=3)out;
+// pocet vertexu ve vystupni primitivu
+// pocet spusteni control shaderu
+layout(vertices=3)out;
 
-	uniform vec2 TessLevelInner;//vnitrni deleni
-	uniform vec4 TessLevelOuter;//deleni hran
+uniform vec2 TessLevelInner;//vnitrni deleni
+uniform vec4 TessLevelOuter;//deleni hran
 
-	void main(){
-	  //velikost gl_in zavisi na GL_PATCH_VERTICES
-	  //velikost gl_out zavisi na layout(vertices=n)out;
-	  gl_out[gl_InvocationID].gl_Position=gl_in[gl_InvocationID].gl_Position;
-	  if(gl_InvocationID==0){
-	    gl_TessLevelOuter[0]=TessLevelOuter[0];
-	    gl_TessLevelOuter[1]=TessLevelOuter[1];
-	    gl_TessLevelOuter[2]=TessLevelOuter[2];
-	    gl_TessLevelOuter[3]=TessLevelOuter[3];
-	    gl_TessLevelInner[0]=TessLevelInner[0];
-	    gl_TessLevelInner[1]=TessLevelInner[1];
-	  }
-	}
+void main(){
+  //velikost gl_in zavisi na GL_PATCH_VERTICES
+  //velikost gl_out zavisi na layout(vertices=n)out;
+  gl_out[gl_InvocationID].gl_Position=gl_in[gl_InvocationID].gl_Position;
+  if(gl_InvocationID==0){
+    gl_TessLevelOuter[0]=TessLevelOuter[0];
+    gl_TessLevelOuter[1]=TessLevelOuter[1];
+    gl_TessLevelOuter[2]=TessLevelOuter[2];
+    gl_TessLevelOuter[3]=TessLevelOuter[3];
+    gl_TessLevelInner[0]=TessLevelInner[0];
+    gl_TessLevelInner[1]=TessLevelInner[1];
+  }
+}
 	\end{minted}
 	}
 \end{frame}
@@ -112,15 +112,15 @@
 	\end{itemize}
 	{\scriptsize
 	\begin{minted}[frame=lines]{glsl}
-	#version 430
+#version 430
 
-	layout(quads)in;
+layout(quads)in;
 
-	void main(){
-	  vec4 A=mix(gl_in[0].gl_Position,gl_in[1].gl_Position,gl_TessCoord.x);
-	  vec4 B=mix(gl_in[3].gl_Position,gl_in[2].gl_Position,gl_TessCoord.x);
-	  gl_Position=mix(A,B,gl_TessCoord.y);
-	}
+void main(){
+  vec4 A=mix(gl_in[0].gl_Position,gl_in[1].gl_Position,gl_TessCoord.x);
+  vec4 B=mix(gl_in[3].gl_Position,gl_in[2].gl_Position,gl_TessCoord.x);
+  gl_Position=mix(A,B,gl_TessCoord.y);
+}
 	\end{minted}
 	}
 \end{frame}
@@ -132,25 +132,25 @@
   \frametitle{Béziérovy plochy - příklad}
 	{\scriptsize
 	\begin{minted}[frame=lines]{glsl}
-	// Vertex shader	
-	#version 430
-	void main() {
-	  gl_Position = mvp*position;
-	}
+// Vertex shader	
+#version 430
+void main() {
+  gl_Position = mvp*position;
+}
 
-	// Control shader
-	#version 430
-	layout(vertices=16) out;
+// Control shader
+#version 430
+layout(vertices=16) out;
 
-	void main() {
-	  gl_out[gl_InvocationID].gl_Position =
-	  gl_in[gl_InvocationID].gl_Position;
-	  if(gl_InvocationID == 0) {
-	    gl_TessLevelInner[0] = gl_TessLevelInner[1] = 
-	    gl_TessLevelOuter[0] = gl_TessLevelOuter[1] =
-	    gl_TessLevelOuter[2] = gl_TessLevelOuter[3] = 64;
-	  }
-	}
+void main() {
+  gl_out[gl_InvocationID].gl_Position =
+  gl_in[gl_InvocationID].gl_Position;
+  if(gl_InvocationID == 0) {
+    gl_TessLevelInner[0] = gl_TessLevelInner[1] = 
+    gl_TessLevelOuter[0] = gl_TessLevelOuter[1] =
+    gl_TessLevelOuter[2] = gl_TessLevelOuter[3] = 64;
+  }
+}
 	\end{minted}
 	}
 \end{frame}
@@ -159,25 +159,25 @@
     \frametitle{Béziérovy plochy - příklad}
   	{\scriptsize
 		\begin{minted}[frame=lines]{glsl}
-		// Evaluation shader
-		#version 430
-		layout(quads, ccw) in;
+// Evaluation shader
+#version 430
+layout(quads, ccw) in;
 
-		vec4 bernstein(float t) {
-		  return vec4((1-t)*(1-t)*(1-t), 3*t*(1-t)*(1-t), 3*t*t*(1-t), t*t*t);
-		}
+vec4 bernstein(float t) {
+  return vec4((1-t)*(1-t)*(1-t), 3*t*(1-t)*(1-t), 3*t*t*(1-t), t*t*t);
+}
 
-		void main() {
-		  vec4 bu = bernstein(gl_TessCoord.x);
-		  vec4 bv = bernstein(gl_TessCoord.y);
-		  vec4 position = vec4(0, 0, 0, 0);
-		  for(int y = 0; y < 4; ++y){
-		    for(int x = 0; x < 4; ++x){
-		      position += bu[x]*bv[y]*gl_in[4*y + x].gl_Position;
-		    }
-		  }
-		  gl_Position = position;
-		}
+void main() {
+  vec4 bu = bernstein(gl_TessCoord.x);
+  vec4 bv = bernstein(gl_TessCoord.y);
+  vec4 position = vec4(0, 0, 0, 0);
+  for(int y = 0; y < 4; ++y){
+    for(int x = 0; x < 4; ++x){
+      position += bu[x]*bv[y]*gl_in[4*y + x].gl_Position;
+    }
+  }
+  gl_Position = position;
+}
   	\end{minted}
 		}
 \end{frame}
