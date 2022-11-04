@@ -9,32 +9,44 @@
 
 \begin{frame}[fragile]
 \frametitle{Geometry shader}
+  \scriptsize
 	\begin{itemize}
-	\item Geometry shader se nachází za vertex shaderem (za teselací).
-	\item Pracuje po primitivech - má přítup ke všem atributům všech vrcholů vstupního primitiva
-	\item Umožňuje generování geometrie a její úpravu.
-	\item Transformaci bodu na polygon. 
-	\item Používá se pro různé efekty (např. stíny (pomocí stínových těles)).
-	\item Další využití může být v částicových systémech.
-	\item Geometry Instancing.
-	\item Transform feedback.
+    \item Geometry shader is located between rasterisation and vertex shader (after tessellation).
+	  \item It processes primitives - It can access all atributes of all primitive vertices.
+    \item It can generate or modify geometry (a point to polygon).
+    \item It can be used for various effect (shadows, particle systems, debug draws).
+	  \item Geometry Instancing.
+	  \item Transform feedback.
+	\end{itemize}
+	\begin{itemize}
+	  \item Geometry shader se nachází za vertex shaderem (za teselací).
+	  \item Pracuje po primitivech - má přítup ke všem atributům všech vrcholů vstupního primitiva
+	  \item Umožňuje generování geometrie a její úpravu.
+	  \item Transformaci bodu na polygon. 
+	  \item Používá se pro různé efekty (např. stíny (pomocí stínových těles)).
+	  \item Další využití může být v částicových systémech.
+	  \item Geometry Instancing.
+	  \item Transform feedback.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Geometry shader - vstupy/výstupy}
+\frametitle{Geometry shader - inputs/outputs}
+  \scriptsize
 	\begin{itemize}
+  \item Type of input primitive has to be specified inside geometry shader.
 	\item V Geometry shaderu je nutné specifikovat typ vstupního primitiva.
 	{\scriptsize
-	\begin{minted}[frame=lines]{glsl}
+\begin{minted}[bgcolor=bg]{packages/graphics.py:GLShaderLexer -x}
 layout(points,invocations=N)in;//vstupni primitivum bude bod
 //points, lines, lines_adjacency, triangles, triangles_adjacency
 //invocations - kolikrat bude GS spusten na jedno primitivum
 	\end{minted}
 	}
+	\item Type of output primitive has to be also specified as well as maximal number of vertices.
 	\item Také je nutné definovat výstupní primitivum a maximální počet výstupních vertexů.
 	{\scriptsize
-	\begin{minted}[frame=lines]{glsl}
+\begin{minted}[bgcolor=bg]{packages/graphics.py:GLShaderLexer -x}
 layout(triangle_strip,max_vertices=4)out;//vystup je sekvence troj.
 //points, line_strip, triangle_strip
 	\end{minted}
@@ -43,13 +55,14 @@ layout(triangle_strip,max_vertices=4)out;//vystup je sekvence troj.
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Geometry shader - bod na čtverec}
+\frametitle{Geometry shader - a point to square}
 	\begin{figure}[h]
 		\includegraphics[width=9cm,keepaspectratio]{pics/geometryShader/gs.pdf}
 	\end{figure}
+  \scriptsize
 
 	{\scriptsize
-	\begin{minted}[frame=lines]{glsl}
+\begin{minted}[bgcolor=bg]{packages/graphics.py:GLShaderLexer -x}
 #version 430
 
 layout(points)in;
@@ -73,7 +86,7 @@ void main(){
 \begin{frame}[fragile]
 \frametitle{Geometry shader - fullscreen quad}
 	{\scriptsize
-	\begin{minted}[frame=lines]{glsl}
+\begin{minted}[bgcolor=bg]{packages/graphics.py:GLShaderLexer -x}
 #version 430
 layout(points)in;
 layout(triangle_strip,max_vertices=4)out;
@@ -87,18 +100,18 @@ void main(){
 	\end{minted}
 	}
 	{\scriptsize
-	\begin{minted}[frame=lines]{c++}
-glGenVertexArrays(1,&emptyVAO);
+\begin{minted}[bgcolor=bg]{packages/c_cpp.py:CppLexer -x}
+glCreateVertexArrays(1,&emptyVAO);
 //...
-glBindVertexArray(emptyVAO);//aktivujeme VAO
+glBindVertexArray(emptyVAO);//empty VAO
 glDrawArrays(GL_POINTS,0,1);
-glBindVertexArray(0);//deaktivujeme VAO
+glBindVertexArray(0);
 	\end{minted}
 	}
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{shadow volumes - zfail verze}
+\frametitle{shadow volumes - zfail}
   \begin{figure}[h]
     \includegraphics[width=11cm,keepaspectratio]{pics/geometryShader/shadowvolume.pdf}
   \end{figure}
@@ -109,7 +122,7 @@ glBindVertexArray(0);//deaktivujeme VAO
   \begin{columns}[T]
     \begin{column}{.44\textwidth}
 	    {\tiny
-      	\begin{minted}[frame=lines]{glsl}
+\begin{minted}[bgcolor=bg]{packages/graphics.py:GLShaderLexer -x}
 #version 330
 layout(triangles)in;
 layout(triangle_strip,max_vertices=10)out;
@@ -118,10 +131,10 @@ uniform vec4 LightPosition;//pozice svetla
 void main(){
   vec4 LP=M*LightPosition;
   vec4 p[6];
-  p[0]=gl_in[0].gl_Position;//body trojuhelniku
+  p[0]=gl_in[0].gl_Position;//triangle points
   p[1]=gl_in[1].gl_Position;
   p[2]=gl_in[2].gl_Position;
-  p[3]=vec4(gl_in[0].gl_Position.xyz*LP.w-LP.xyz,0);//v nekonecnu
+  p[3]=vec4(gl_in[0].gl_Position.xyz*LP.w-LP.xyz,0);//in infinity
   p[4]=vec4(gl_in[1].gl_Position.xyz*LP.w-LP.xyz,0);
   p[5]=vec4(gl_in[2].gl_Position.xyz*LP.w-LP.xyz,0);
   vec3 N=normalize(cross((p[1]-p[0]).xyz,(p[2]-p[0]).xyz));

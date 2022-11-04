@@ -2,21 +2,21 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="463.59927"
    height="102.9558"
    id="svg2"
    inkscape:label="Pozadí"
    version="1.1"
-   inkscape:version="0.92.3 (2405546, 2018-03-11)"
-   sodipodi:docname="gs.svg">
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="gs.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs4690">
     <inkscape:perspective
@@ -239,16 +239,17 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="269.62005"
-     inkscape:cy="25.423774"
+     inkscape:cx="269.45819"
+     inkscape:cy="25.253813"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1919"
-     inkscape:window-height="1172"
+     inkscape:window-height="1166"
      inkscape:window-x="1"
      inkscape:window-y="0"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     inkscape:pagecheckerboard="0" />
   <metadata
      id="metadata4693">
     <rdf:RDF>
@@ -462,7 +463,7 @@
          y="380.21896"
          x="115.37103"
          id="tspan5881"
-         sodipodi:role="line">Pole Vertexů</tspan></text>
+         sodipodi:role="line">Vertex Array</tspan></text>
     <text
        id="text5883"
        y="322.92953"
@@ -473,7 +474,7 @@
          y="322.92953"
          x="203.36041"
          id="tspan5885"
-         sodipodi:role="line">Uniformy</tspan></text>
+         sodipodi:role="line">Uniforms</tspan></text>
     <rect
        y="310.9191"
        x="193.60486"
@@ -503,7 +504,7 @@
          y="367.86719"
          x="43.146618"
          id="tspan6499"
-         sodipodi:role="line">Primitiva</tspan></text>
+         sodipodi:role="line">Primitive</tspan></text>
     <path
        inkscape:connector-curvature="0"
        id="path5891-9-0"
@@ -619,7 +620,7 @@
          sodipodi:role="line"
          id="tspan9152"
          x="346.37335"
-         y="369.6745">Primitiva</tspan></text>
+         y="369.6745">Primitive</tspan></text>
     <g
        id="g5255"
        transform="translate(19.270846,-23.309653)">

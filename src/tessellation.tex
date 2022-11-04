@@ -1,30 +1,33 @@
 \setbeamercolor{background canvas}{bg=fitblue}
 \begin{frame}
-\frametitle{Teselace}
+\frametitle{Tessellation / Teselace}
 \begin{center}
-\Huge {\color{white}Teselace}
+\Huge {\color{white} Tessellation / Teselace}
 \end{center}
 \end{frame}
 \setbeamercolor{background canvas}{bg=white}
 
 \begin{frame}[fragile]
-\frametitle{Teselace}
+\frametitle{Tessellation / Teselace}
+  \scriptsize
+	\begin{itemize}
+	\item Tessellation refines one primitive to multiple connected sub-primitives.
+	\item The main purpose is to add geometric details.
+	\item It is located before geometry shader and after vertex shader.
+	\item It is composed of 3 parts: Control Shader, Primitive Generator/ Tessellator, Evaluation Shader.
+	\item New type of primitive \textcolor{red}{GL\_PATCHES}
+	\end{itemize}
 	\begin{itemize}
 	\item Teselace je rozřezání jednoho primitiva na více spojených.
 	\item Může se použít pro zjemnění geometrie
 	\item Nachází se za vertex shaderem a před geometry shaderem.
-	\item Složená ze 3 částí:
-	\begin{itemize}
-	\item Control Shader
-	\item Generování primitiv/Teselace
-	\item Evaluation Shader
-	\end{itemize}
+	\item Složená ze 3 částí: Contrl Shader, Generování primitiv/Teselace, Evaluation Shader
 	\item Nový typ primitiva \textcolor{red}{GL\_PATCHES}
 	\end{itemize}
   {\scriptsize
-	\begin{minted}[frame=lines]{c++}
-glPatchParameteri(GL_PATCH_VERTICES,10);//nastavi pocet vrcholu patche - 10
-glDrawArrays(GL_PATCHES,0,100);//vykresli 10 patchu po 10 vrcholech
+\begin{minted}[bgcolor=bg]{packages/c_cpp.py:CppLexer -x}
+glPatchParameteri(GL_PATCH_VERTICES,10);//set the number of patch vertices
+glDrawArrays(GL_PATCHES,0,100);//draw 10 patches each with 10 vertices
 	\end{minted}
   }
 	\begin{figure}[h]
@@ -34,6 +37,15 @@ glDrawArrays(GL_PATCHES,0,100);//vykresli 10 patchu po 10 vrcholech
 
 \begin{frame}
 \frametitle{Control Shader}
+  \scriptsize
+	\begin{itemize}
+	\item It controls the tessellation level.
+	\item It computes control points.
+	\item It is executed as many times as is the number of vertices in output patch.
+	\item Vertex counting number is stored in \textcolor{OliveGreen}{gl\_InvocationID}
+	\item \textcolor{OliveGreen}{barrier}()
+	\end{itemize}
+
 	\begin{itemize}
 	\item Řídí stupěň teselace
 	\item Počítá kontrolní body
@@ -47,7 +59,7 @@ glDrawArrays(GL_PATCHES,0,100);//vykresli 10 patchu po 10 vrcholech
 \end{frame}
 
 \begin{frame}
-    \frametitle{Parametry}
+    \frametitle{Tessellation levels, úrovně teselace}
 
     \includegraphics[width=\textwidth]{pics/tessellation/tess.pdf}
 
@@ -60,21 +72,21 @@ glDrawArrays(GL_PATCHES,0,100);//vykresli 10 patchu po 10 vrcholech
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Control Shader - příklad}
+\frametitle{Control Shader - example}
 	{\scriptsize
-	\begin{minted}[frame=lines]{glsl}
+\begin{minted}[bgcolor=bg]{packages/graphics.py:GLShaderLexer -x}
 #version 430
 
-// pocet vertexu ve vystupni primitivu
-// pocet spusteni control shaderu
+// the number of vertices in output patch
+// the number of executions of control shader per input patch
 layout(vertices=3)out;
 
-uniform vec2 TessLevelInner;//vnitrni deleni
-uniform vec4 TessLevelOuter;//deleni hran
+uniform vec2 TessLevelInner;//inner tessellation
+uniform vec4 TessLevelOuter;//outer tessellation
 
 void main(){
-  //velikost gl_in zavisi na GL_PATCH_VERTICES
-  //velikost gl_out zavisi na layout(vertices=n)out;
+  //the size of gl_in depends on GL_PATCH_VERTICES
+  //the size of gl_out depends on layout(vertices=n)out;
   gl_out[gl_InvocationID].gl_Position=gl_in[gl_InvocationID].gl_Position;
   if(gl_InvocationID==0){
     gl_TessLevelOuter[0]=TessLevelOuter[0];
@@ -91,6 +103,13 @@ void main(){
 
 \begin{frame}
 \frametitle{Evaluation Shader}
+  \scriptsize
+	\begin{itemize}
+		\item Selects primitive type \textcolor{Orange}{isolines},\textcolor{orange}{triangles},\textcolor{orange}{quads}.
+		\item Computes location of vertices of tessellated primitive.
+		\item Tessellation coordinates \textcolor{OliveGreen}{gl\_TessCoord}
+		\item Generated primitives are sent to geometry shader.
+	\end{itemize}
 	\begin{itemize}
 		\item Nastavuje typ primitiva \textcolor{Orange}{isolines},\textcolor{orange}{triangles},\textcolor{orange}{quads}
 		\item Počítá souřadnice vrcholů nateselovaného primitiva
@@ -105,13 +124,18 @@ void main(){
 
 
 \begin{frame}[fragile]
-\frametitle{Evaluation Shader - příklad}
+\frametitle{Evaluation Shader - example}
+  \scriptsize
+	\begin{itemize}
+		\item Tessellated quad
+		\item Computation of new vertices using tessellation coordinates and control points.
+	\end{itemize}
 	\begin{itemize}
 		\item Nateselovaný čtyřúhelník
 		\item výpočet pozic vrcholů
 	\end{itemize}
 	{\scriptsize
-	\begin{minted}[frame=lines]{glsl}
+\begin{minted}[bgcolor=bg]{packages/graphics.py:GLShaderLexer -x}
 #version 430
 
 layout(quads)in;
@@ -129,9 +153,9 @@ void main(){
 
 
 \begin{frame}[fragile]
-  \frametitle{Béziérovy plochy - příklad}
+  \frametitle{Bézier surfaces - example}
 	{\scriptsize
-	\begin{minted}[frame=lines]{glsl}
+\begin{minted}[bgcolor=bg]{packages/graphics.py:GLShaderLexer -x}
 // Vertex shader	
 #version 430
 void main() {
@@ -156,9 +180,9 @@ void main() {
 \end{frame}
 
 \begin{frame}[fragile]
-    \frametitle{Béziérovy plochy - příklad}
+    \frametitle{Bézier surfaces - example}
   	{\scriptsize
-		\begin{minted}[frame=lines]{glsl}
+\begin{minted}[bgcolor=bg]{packages/graphics.py:GLShaderLexer -x}
 // Evaluation shader
 #version 430
 layout(quads, ccw) in;
@@ -183,9 +207,9 @@ void main() {
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Komunikace mezi shadery - příklad}
+\frametitle{Shader Communication / Komunikace mezi shadery}
 	{\tiny
-	\begin{minted}[frame=lines]{glsl}
+\begin{minted}[bgcolor=bg]{packages/graphics.py:GLShaderLexer -x}
 #version 430
 
 //vertex shader
@@ -193,10 +217,10 @@ out vec4 vAttrib;
 gl_Position
 
 //control shader
-//atribut z vertex shaderu jejich pocet je rizen glPatchParameteri(GL_PATCH_VERTICES,n);
-in  vec4 vAttrib[];//atribut z vertex shaderu
-gl_in[].gl_Position;//atribut pozice z vertex shaderu
-//atribut z control shaderu do evaluation shaderu, pocet je rizen pomoci layout(vertices=n)out;
+//attrib from vertex shader. The array size is determined by glPatchParameteri(GL_PATCH_VERTICES,n);
+in  vec4 vAttrib[];//atrib. from vertex shader
+gl_in[].gl_Position;//position attribute from vertex shader
+//output attribute from control shader to evaluation shader, the array size is determined by layout(vertices=n)out;
 out vec4 cAttrib[];//atribut pro vrchol z control shaderu do evaluation shaderu
 //per patch atribut z control shaderu do evaluation shaderu, pocet je 1
 patch out mat4 cM;//atribut pro patch z control shaderu do evaluation shaderu
@@ -268,7 +292,7 @@ $$
     \begin{column}{.44\textwidth}
       Control Shader
   	{\tiny
-		\begin{minted}[frame=lines]{glsl}
+\begin{minted}[bgcolor=bg]{packages/graphics.py:GLShaderLexer -x}
 #version 400
 layout(vertices=1)out;
 patch out mat4 K;
@@ -304,7 +328,7 @@ void main(){
     \begin{column}{.48\textwidth}
       Evaluation Shader
   	{\tiny
-		\begin{minted}[frame=lines]{glsl}
+\begin{minted}[bgcolor=bg]{packages/graphics.py:GLShaderLexer -x}
 #version 400
 
 #define MY_PI 3.14159265359

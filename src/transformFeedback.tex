@@ -9,6 +9,12 @@
 
 \begin{frame}
 \frametitle{Transform feedback}
+  \scriptsize
+	\begin{itemize}
+	\item Transform feedback redirects stream of geometry back to buffer.
+	\item Main usage is in Geometry Shader
+	\item Streams (drawing and writting to buffer)
+	\end{itemize}
 	\begin{itemize}
 	\item Zápis primitiv do bufferu
 	\item Hlavně v Geometry Shaderu
@@ -27,9 +33,9 @@
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Transform feedback - příklad}
+\frametitle{Example}
 	{\scriptsize
-	\begin{minted}[frame=lines]{c++}
+\begin{minted}[bgcolor=bg]{packages/c_cpp.py:CppLexer -x}
 const char*Vayrings[]={"Out1", "Out2"};
 glTransformFeedbackVaryings(Program,2,Varyings,GL_SEPARATE_ATTRIBS);
 glLinkProgram(Program);
@@ -39,7 +45,7 @@ glLinkProgram(Program);
 glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER,0,Buffer1);
 glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER,1,Buffer2);
 
-glEnable(GL_RASTERIZER_DISCARD);//nebudeme rasterizovat
+glEnable(GL_RASTERIZER_DISCARD);//disable rasterization
 //...
 glBeginTransformFeedback(GL_TRIANGLES);
 glDrawArrays(...);
@@ -50,31 +56,32 @@ glEndTransformFeedback();
 
 \begin{frame}[fragile]
 \frametitle{Transform Feedback - Inicializace}
+  The program have to relinked.\\
 	Slinkovat program s nastavenými výstupními proměnnými v shaderu.
 	c++:
 	{\scriptsize
-	\begin{minted}[frame=lines]{cpp}
-//seznam promennych v shaderu, ktere se budou pomoci TF zapisovat do bufferu
+\begin{minted}[bgcolor=bg]{packages/c_cpp.py:CppLexer -x}
+//list of shader variables that will be stored in TF buffer
 const char*ResetVaryings[]={"vPosition","vVelocity","vMass"};
-//nastavime seznam a nastavime prokladany zapis
+//set the list with interleaved format
 glTransformFeedbackVaryings(ResetProgram,3,ResetVaryings,GL_INTERLEAVED_ATTRIBS);
-//znovu slinkujeme program
+//relink program
 glLinkProgram(ResetProgram);
 	\end{minted}
 	}
 	glsl:
 	{\scriptsize
-	\begin{minted}[frame=lines]{glsl}
+\begin{minted}[bgcolor=bg]{packages/graphics.py:GLShaderLexer -x}
 #version 330
 
-layout(location=0)out vec2  vPosition;//pozice castice
-layout(location=1)out vec2  vVelocity;//rychlost castice
-layout(location=2)out float vMass;//hmotnost castice
+layout(location=0)out vec2  vPosition;//particle position
+layout(location=1)out vec2  vVelocity;//particle velocity
+layout(location=2)out float vMass;//particle mass
 //...
 void main(){
-  vPosition = vec2(0);//pozice do prostred
-  vVelocity = vec2(cos(VelAngle),sin(VelAngle))*VelSize;//rychlost jako vektor
-  vMass     = Noise(MassSeed+uint(gl_VertexID),MinMass,MaxMass);//hmotnost
+  vPosition = vec2(0);//center
+  vVelocity = vec2(cos(VelAngle),sin(VelAngle))*VelSize;//velocity vector
+  vMass     = Noise(MassSeed+uint(gl_VertexID),MinMass,MaxMass);//mass
 }
 	\end{minted}
 	}
