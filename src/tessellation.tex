@@ -238,8 +238,7 @@ in vec3 eNormal[];
 	}
 \end{frame}
 
-\begin{frame}[fragile]
-    \frametitle{Příklad - Kružnice vepsaná}
+\begin{frame}[fragile]\frametitle{Example - incircle}
   \begin{columns}[T]
     \begin{column}{.44\textwidth}
 	    \begin{figure}[h]
@@ -287,7 +286,7 @@ $$
 \end{frame}
 
 \begin{frame}[fragile]
-    \frametitle{Příklad - Kružnice vepsaná}
+    \frametitle{Example - incircle}
   \begin{columns}[T]
     \begin{column}{.44\textwidth}
       Control Shader
@@ -353,9 +352,15 @@ void main(){
 \end{frame}
 
 
-\begin{frame}
-\frametitle{Jak moc teselovat?}
+\begin{frame}\frametitle{How to select tessellation levels / Jak moc teselovat?}
+  \scriptsize
 	Outer level:
+	\begin{itemize}
+	\item Edges of sides has to have same tessellation level (no T-junkcions)
+	\item Transform control points to the screen
+	\item Compute projecteded edge lenghts
+	\item Divide by the largest
+	\end{itemize}
 	\begin{itemize}
 	\item Strany ploch musí odpovídat (zamezení T-spojů)
 	\item Transformovat kontrolní body na obrazovku
@@ -364,10 +369,14 @@ void main(){
 	\end{itemize}
 	Inner level:
 	\begin{itemize}
+	\item From outer-levels
+	\item Average, maximum, ...
+	\item Correction according to inner control points
+	\end{itemize}
+	\begin{itemize}
 	\item Z přílušných outer-levelů
 	\item průměr, maximum, ...
 	\item Korekce podle vnitřních kontrolních bodů
 	\end{itemize}
-	Ukázka v aplikaci
 \end{frame}
 
